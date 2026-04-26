@@ -32,11 +32,11 @@ jobs:
 
       - name: Rename output (Linux/macOS)
         if: runner.os != 'Windows'
-        run: mv dist/main dist/sysmon
+        run: mv dist/main dist/mONuTILITY
 
       - name: Rename output (Windows)
         if: runner.os == 'Windows'
-        run: rename dist\\main.exe sysmon.exe
+        run: rename dist\\main.exe mONuTILITY.exe
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
