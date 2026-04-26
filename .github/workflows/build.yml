@@ -1,0 +1,45 @@
+name: Build All OS
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install pyinstaller psutil
+
+      - name: Windows deps
+        if: runner.os == 'Windows'
+        run: pip install windows-curses
+
+      - name: Build
+        run: pyinstaller --onefile --strip --noconfirm main.py
+
+      - name: Rename output (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: mv dist/main dist/sysmon
+
+      - name: Rename output (Windows)
+        if: runner.os == 'Windows'
+        run: rename dist\\main.exe sysmon.exe
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ runner.os }}
+          path: dist/*
