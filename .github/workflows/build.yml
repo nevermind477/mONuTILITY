@@ -35,7 +35,7 @@ jobs:
         run: mv dist/main dist/mONuTILITY
 
       - name: Rename file
-        run: Rename-Item -Path "dist\main.exe" -NewName "mONuTILITY.exe"
+        run: mv dist/main.exe mONuTILITY.exe
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
