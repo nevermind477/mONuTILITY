@@ -34,9 +34,8 @@ jobs:
         if: runner.os != 'Windows'
         run: mv dist/main dist/mONuTILITY
 
-      - name: Rename output (Windows)
-        if: runner.os == 'Windows'
-        run: rename dist\\main.exe mONuTILITY.exe
+      - name: Rename file
+        run: Rename-Item -Path "dist\main.exe" -NewName "mONuTILITY.exe"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
