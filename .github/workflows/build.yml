@@ -1,3 +1,4 @@
+name: Build Linux Binary
 
 on:
   push:
@@ -5,14 +6,11 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -20,26 +18,20 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install pyinstaller psutil
-
-      - name: Windows deps
-        if: runner.os == 'Windows'
-        run: pip install windows-curses
-
-      - name: Build
-        run: pyinstaller --onefile --strip --noconfirm main.py
-
-      - name: Rename executable
-        shell: bash
         run: |
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            mv dist/main.exe dist/mONuTILITY.exe
-          else
-            mv dist/main dist/mONuTILITY
-          fi
+          python -m pip install --upgrade pip
+          pip install pyinstaller psutil
+
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller --onefile --noconfirm --clean main.py
+
+      - name: Rename binary
+        run: |
+          mv dist/main dist/mONuTILITY
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-${{ runner.os }}
-          path: dist/mONuTILITY*
+          name: mONuTILITY-linux
+          path: dist/mONuTILITY
